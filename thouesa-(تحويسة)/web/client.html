@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>لوحة العميل | تحويسة THOUESA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --accent: #FF8A00;
+            --accent-glow: rgba(255, 138, 0, 0.2);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --card-bg: #111111;
+            --font-main: 'Tajawal', sans-serif;
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body.light-mode {
+            --bg: #f8f9fa;
+            --text: #1a1a1a; 
+            --text-dim: #666666;
+            --glass: rgba(0, 0, 0, 0.03); 
+            --border: rgba(0, 0, 0, 0.08);
+            --card-bg: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text);
+            direction: rtl;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Layout */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar (Desktop) */
+        .sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-brand img {
+            height: 50px;
+            width: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 16px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        /* Bottom Nav (Mobile) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: calc(70px + var(--safe-area-inset-bottom));
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: none;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: var(--safe-area-inset-bottom);
+            z-index: 1500;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .mobile-nav-item.active { color: var(--accent); }
+        .mobile-nav-item svg { width: 22px; height: 22px; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 40px;
+            max-width: 1400px;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .bottom-nav { display: flex; }
+            .main-content { margin-right: 0; padding: 20px 20px 100px; }
+        }
+
+        /* Components */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .stat-label { font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
+        .stat-value { font-size: 24px; font-weight: 900; color: var(--accent); }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .fs-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            margin-bottom: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .fs-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .fs-input[readonly] { opacity: 0.6; cursor: not-allowed; background: rgba(0,0,0,0.2); }
+
+        .hidden { display: none !important; }
+
+        /* Order Engine Styles */
+        .order-type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .type-btn {
+            padding: 15px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .type-btn.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+
+        .t-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .t-dot {
+            width: 32px;
+            height: 32px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .t-step.active .t-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .t-label { font-size: 10px; color: var(--text-dim); font-weight: 700; }
+        .t-step.active .t-label { color: var(--text); }
+
+        /* Invoice */
+        .invoice-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .inv-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .inv-total {
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: 900;
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .toggle-bg {
+            width: 44px;
+            height: 24px;
+            background: var(--border);
+            border-radius: 100px;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .toggle-circle {
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            transition: 0.3s;
+        }
+
+        .toggle-container.active .toggle-bg { background: var(--accent); }
+        .toggle-container.active .toggle-circle { transform: translateX(-20px); }
+
+        /* Splash Screen */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .splash-logo { width: 180px; height: auto; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            z-index: 3000;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div class="logo-container" style="text-align: center;">
+            <img src="/img/logo.png" alt="Thouesa Online Logo" class="splash-logo">
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar (Desktop) -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="/img/logo.png" alt="Thouesa Online">
+            </div>
+            <nav id="desktop-nav">
+                <a onclick="showSection('dashboard')" class="nav-link active" data-section="dashboard">🏠 الرئيسية</a>
+                <a onclick="showSection('new-order')" class="nav-link" data-section="new-order">➕ طلب جديد</a>
+                <a onclick="showSection('tracking')" class="nav-link" data-section="tracking">📦 تتبع الشحنات</a>
+                <a onclick="showSection('wallet')" class="nav-link" data-section="wallet">💳 المحفظة</a>
+                <a onclick="showSection('addresses')" class="nav-link" data-section="addresses">📍 دفتر العناوين</a>
+                <a onclick="showSection('tickets')" class="nav-link" data-section="tickets">🎫 الدعم الفني</a>
+                <a onclick="showSection('profile')" class="nav-link" data-section="profile">👤 الملف الشخصي</a>
+                <a onclick="logout()" class="nav-link" style="color: #ff4444; margin-top: 40px;">🚪 تسجيل الخروج</a>
+            </nav>
+        </aside>
+
+        <!-- Bottom Nav (Mobile) -->
+        <div class="bottom-nav">
+            <a onclick="showSection('dashboard')" class="mobile-nav-item active" data-section="dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                <span>الرئيسية</span>
+            </a>
+            <a onclick="showSection('new-order')" class="mobile-nav-item" data-section="new-order">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>طلب</span>
+            </a>
+            <a onclick="showSection('tracking')" class="mobile-nav-item" data-section="tracking">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                <span>تتبع</span>
+            </a>
+            <a onclick="showSection('profile')" class="mobile-nav-item" data-section="profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>حسابي</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div>
+                    <h1 id="page-title" style="font-size: 24px; font-weight: 900;">الرئيسية</h1>
+                    <p id="user-welcome" style="font-size: 14px; color: var(--text-dim);">أهلاً بك، ...</p>
+                </div>
+                <div id="user-cid" style="background: var(--accent-glow); color: var(--accent); padding: 8px 16px; border-radius: 100px; font-weight: 900; font-size: 12px;">CID-....</div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="app-section">
+                <div class="grid-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">رصيد المحفظة</div>
+                        <div id="stat-wallet" class="stat-value">0.00 د.أ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">طلبات قيد المراجعة</div>
+                        <div id="stat-pending" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">إجمالي الشحنات</div>
+                        <div id="stat-total" class="stat-value">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="section-title">آخر التحديثات</span>
+                    <div id="dash-orders-list">
+                        <!-- Orders list -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Order Section -->
+            <section id="new-order-section" class="app-section hidden">
+                <div class="card">
+                    <span class="section-title">إنشاء طلب جديد</span>
+                    
+                    <div class="order-type-selector">
+                        <div class="type-btn active" onclick="setOrderType('parcel', this)">📦 شحن طرد</div>
+                        <div class="type-btn" onclick="setOrderType('buy', this)">🛒 اشترِ لي</div>
+                        <div class="type-btn" onclick="setOrderType('global', this)">🌍 تسوق عالمي</div>
+                    </div>
+
+                    <form id="order-form">
+                        <input type="hidden" id="order-type" value="parcel">
+                        
+                        <div id="dynamic-fields">
+                            <!-- Fields change based on type -->
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <span class="section-title">الخيارات اللوجستية</span>
+                            
+                            <label class="stat-label">العنوان المختار</label>
+                            <select id="order-address" class="fs-input">
+                                <option value="">اختر من دفتر العناوين...</option>
+                            </select>
+
+                            <label class="stat-label">طريقة الاستلام</label>
+                            <select id="delivery-method" class="fs-input" onchange="updateDeliveryFee()">
+                                <option value="pickup">استلام من المكتب (مجاني)</option>
+                                <option value="door_to_door">توصيل لباب المنزل (تطبق رسوم محلية)</option>
+                            </select>
+
+                            <div class="toggle-container" id="insurance-toggle" onclick="toggleInsurance()">
+                                <div class="toggle-bg"><div class="toggle-circle"></div></div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 14px;">تأمين الشحنة (اختياري)</div>
+                                    <div style="font-size: 11px; color: var(--text-dim);">تأمين شامل لحماية طردك مقابل نسبة بسيطة من القيمة المصرح بها.</div>
+                                </div>
+                            </div>
+
+                            <label class="stat-label">صورة المنتج (اختياري)</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <input type="file" id="product-img-input" class="hidden" onchange="handleProductUpload(this)">
+                                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('product-img-input').click()">📸 رفع صورة</button>
+                                <div id="product-img-preview" style="width: 50px; height: 50px; border-radius: 8px; background: var(--glass); display: none; background-size: cover; background-position: center;"></div>
+                            </div>
+
+                            <button type="button" class="btn" style="width: 100%;" onclick="submitOrder()">تأكيد الطلب وإرساله للمراجعة</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Tracking Section -->
+            <section id="tracking-section" class="app-section hidden">
+                <div id="orders-tracking-list">
+                    <!-- Tracking cards -->
+                </div>
+            </section>
+
+            <!-- Wallet Section -->
+            <section id="wallet-section" class="app-section hidden">
+                <div class="card" style="background: linear-gradient(135deg, var(--accent) 0%, #ffb04d 100%); color: #000;">
+                    <div style="font-size: 14px; font-weight: 700;">الرصيد المتاح</div>
+                    <div id="wallet-balance-display" style="font-size: 40px; font-weight: 900; margin: 10px 0;">0.00 د.أ</div>
+                    <button class="btn" style="background: #000; color: #fff;" onclick="showSection('tickets')">طلب شحن رصيد</button>
+                </div>
+                <div class="card">
+                    <span class="section-title">سجل الحركات المالية</span>
+                    <div id="transactions-list"></div>
+                </div>
+            </section>
+
+            <!-- Addresses Section -->
+            <section id="addresses-section" class="app-section hidden">
+                <div class="card">
+                    <span class="section-title">إضافة عنوان جديد</span>
+                    <input type="text" id="addr-name" class="fs-input" placeholder="اسم المستلم (مثلاً: منزلي، العمل)">
+                    <input type="text" id="addr-phone" class="fs-input" placeholder="رقم الهاتف">
+                    <textarea id="addr-val" class="fs-input" placeholder="العنوان التفصيلي (الولاية، البلدية، الشارع)"></textarea>
+                    <button class="btn" onclick="saveAddress()">حفظ في دفتر العناوين</button>
+                </div>
+                <div id="address-book-list"></div>
+            </section>
+
+            <!-- Tickets Section -->
+            <section id="tickets-section" class="app-section hidden">
+                <div class="card">
+                    <span class="section-title">فتح تذكرة دعم</span>
+                    <input type="text" id="t-subject" class="fs-input" placeholder="الموضوع">
+                    <textarea id="t-message" class="fs-input" placeholder="رسالتك بالتفصيل..."></textarea>
+                    <button class="btn" onclick="sendTicket()">إرسال التذكرة</button>
+                </div>
+                <div id="tickets-list"></div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile-section" class="app-section hidden">
+                <div class="card">
+                    <span class="section-title">البيانات الأساسية (محمية)</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label class="stat-label">الاسم الكامل</label>
+                            <input type="text" id="p-name" class="fs-input" readonly>
+                        </div>
+                        <div>
+                            <label class="stat-label">رقم الهاتف</label>
+                            <input type="text" id="p-phone" class="fs-input" readonly>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="stat-label">البريد الإلكتروني</label>
+                            <input type="text" id="p-email" class="fs-input" readonly>
+                        </div>
+                    </div>
+                    <p style="font-size: 11px; color: var(--accent); margin-top: 10px;">⚠️ لتعديل بياناتك الأساسية، يرجى التواصل مع إدارة الدعم الفني.</p>
+                </div>
+
+                <div class="card">
+                    <span class="section-title">توثيق الهوية الوطنية</span>
+                    <div id="id-status-box" style="padding: 15px; border-radius: 12px; background: var(--glass); margin-bottom: 20px; font-weight: 800; text-align: center;">
+                        الحالة: قيد التحقق
+                    </div>
+                    <input type="file" id="id-upload" class="hidden" onchange="uploadID(this)">
+                    <button class="btn btn-outline" style="width: 100%;" onclick="document.getElementById('id-upload').click()">📤 رفع صورة الهوية الوطنية</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = '/index.html';
+
+        let user = null;
+        let orders = [];
+        let addresses = [];
+        let selectedProductImg = null;
+        let insuranceEnabled = false;
+
+        async function init() {
+            try {
+                const r = await fetch('/api/v1/customer/portal/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!r.ok) throw new Error('Failed to fetch profile');
+                user = await r.json();
+                
+                document.getElementById('user-welcome').innerText = `أهلاً بك، ${user.full_name || ''}`;
+                document.getElementById('user-cid').innerText = user.customer_id || '';
+                
+                const walletBalance = user.wallet_balance || 0;
+                document.getElementById('stat-wallet').innerText = `${walletBalance.toFixed(2)} د.أ`;
+                document.getElementById('wallet-balance-display').innerText = `${walletBalance.toFixed(2)} د.أ`;
+                
+                document.getElementById('p-name').value = user.full_name || '';
+                document.getElementById('p-phone').value = user.phone || '';
+                document.getElementById('p-email').value = user.email || '';
+                
+                const idBox = document.getElementById('id-status-box');
+                if (user.verification_status === 'verified') {
+                    idBox.innerText = '✅ حساب موثق';
+                    idBox.style.color = '#00ff00';
+                } else if (user.verification_status === 'rejected') {
+                    idBox.innerText = '❌ تم رفض الهوية: ' + (user.verification_note || '');
+                    idBox.style.color = '#ff4444';
+                } else {
+                    idBox.innerText = '⏳ بانتظار التوثيق';
+                    idBox.style.color = 'var(--accent)';
+                }
+
+                await loadOrders();
+                await loadAddresses();
+                await loadTransactions();
+                await loadTickets();
+                
+                setOrderType('parcel');
+            } catch (e) {
+                console.error(e);
+                logout();
+            } finally {
+                setTimeout(() => {
+                    const splash = document.getElementById('splash');
+                    if(splash) {
+                        splash.style.opacity = '0';
+                        setTimeout(() => splash.style.display = 'none', 500);
+                    }
+                }, 800);
+            }
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
+            const section = document.getElementById(id + '-section');
+            if(section) section.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll(`[data-section="${id}"]`).forEach(l => l.classList.add('active'));
+            
+            const titles = {
+                dashboard: 'الرئيسية',
+                'new-order': 'طلب جديد',
+                tracking: 'تتبع الشحنات',
+                wallet: 'المحفظة',
+                addresses: 'دفتر العناوين',
+                tickets: 'الدعم الفني',
+                profile: 'الملف الشخصي'
+            };
+            document.getElementById('page-title').innerText = titles[id] || '';
+        }
+
+        function setOrderType(type, el) {
+            document.getElementById('order-type').value = type;
+            if (el) {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active');
+            }
+
+            const container = document.getElementById('dynamic-fields');
+            if (type === 'parcel') {
+                container.innerHTML = `
+                    <label class="stat-label">الوزن التقريبي (كغم)</label>
+                    <input type="number" id="o-weight" class="fs-input" placeholder="مثلاً: 5">
+                    <label class="stat-label">محتويات الطرد</label>
+                    <textarea id="o-items" class="fs-input" placeholder="مثلاً: ملابس، أحذية، هدايا..."></textarea>
+                    <label class="stat-label">القيمة المصرح بها (للجمارك)</label>
+                    <input type="number" id="o-value" class="fs-input" placeholder="القيمة بالدينار الأردني">
+                `;
+            } else if (type === 'buy') {
+                container.innerHTML = `
+                    <label class="stat-label">اسم المتجر / الرابط</label>
+                    <input type="text" id="o-store" class="fs-input" placeholder="رابط المنتج أو اسم المحل">
+                    <label class="stat-label">وصف المنتج والمواصفات</label>
+                    <textarea id="o-items" class="fs-input" placeholder="اللون، المقاس، الكمية..."></textarea>
+                    <label class="stat-label">السعر التقريبي</label>
+                    <input type="number" id="o-value" class="fs-input" placeholder="السعر بالدينار الأردني">
+                `;
+            } else {
+                container.innerHTML = `
+                    <label class="stat-label">رابط المنتج العالمي</label>
+                    <input type="url" id="o-link" class="fs-input" placeholder="https://amazon.com/...">
+                    <label class="stat-label">وصف المنتج</label>
+                    <textarea id="o-items" class="fs-input" placeholder="المواصفات المطلوبة..."></textarea>
+                    <label class="stat-label">القيمة المصرح بها</label>
+                    <input type="number" id="o-value" class="fs-input" placeholder="القيمة بالدينار الأردني">
+                `;
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const r = await fetch('/api/v1/customer/portal/orders', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(!r.ok) return;
+                orders = await r.json();
+                if(!Array.isArray(orders)) orders = [];
+                
+                document.getElementById('stat-total').innerText = orders.length;
+                document.getElementById('stat-pending').innerText = orders.filter(o => o.status === 'pending').length;
+
+                const dashList = document.getElementById('dash-orders-list');
+                const trackList = document.getElementById('orders-tracking-list');
+                
+                const renderOrder = (o) => {
+                    const statuses = ['pending', 'approved', 'in_progress', 'completed'];
+                    const currentIdx = statuses.indexOf(o.status);
+                    const isRejected = o.status === 'rejected';
+                    
+                    return `
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span style="font-weight: 900; color: var(--accent);">${o.serial_number || ''}</span>
+                                <span style="font-size: 12px; opacity: 0.5;">${o.created_at ? new Date(o.created_at).toLocaleDateString('ar-JO') : ''}</span>
+                            </div>
+
+                            ${isRejected ? `
+                                <div style="background: rgba(255,0,0,0.1); border: 1px solid #ff4444; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                                    <div style="color: #ff4444; font-weight: 900; font-size: 14px;">❌ تم رفض الطلب</div>
+                                    <div style="color: #ff4444; font-size: 12px; margin-top: 5px;">السبب: ${o.rejection_reason || 'غير محدد'}</div>
+                                </div>
+                            ` : `
+                                <div class="timeline">
+                                    <div class="t-step ${currentIdx >= 0 ? 'active' : ''}">
+                                        <div class="t-dot">1</div>
+                                        <div class="t-label">مراجعة</div>
+                                    </div>
+                                    <div class="t-step ${currentIdx >= 1 ? 'active' : ''}">
+                                        <div class="t-dot">2</div>
+                                        <div class="t-label">دفع</div>
+                                    </div>
+                                    <div class="t-step ${currentIdx >= 2 ? 'active' : ''}">
+                                        <div class="t-dot">3</div>
+                                        <div class="t-label">شحن</div>
+                                    </div>
+                                    <div class="t-step ${currentIdx >= 3 ? 'active' : ''}">
+                                        <div class="t-dot">4</div>
+                                        <div class="t-label">تسليم</div>
+                                    </div>
+                                </div>
+                            `}
+
+                            <div style="font-size: 13px; margin-bottom: 15px;">
+                                <div><strong>النوع:</strong> ${o.type === 'parcel' ? 'شحن طرد' : o.type === 'buy' ? 'اشترِ لي' : 'تسوق عالمي'}</div>
+                                <div><strong>المحتوى:</strong> ${o.item_category || 'عام'}</div>
+                            </div>
+
+                            ${o.status !== 'pending' && o.status !== 'rejected' ? `
+                                <div class="invoice-box">
+                                    <div class="inv-row"><span>أجور الشحن</span><span>${o.shipping_fees || 0} د.أ</span></div>
+                                    <div class="inv-row"><span>الجمارك والضرائب</span><span>${(o.customs_fees || 0) + (o.tax_value || 0)} د.أ</span></div>
+                                    <div class="inv-row"><span>التأمين</span><span>${o.insurance_amount || 0} د.أ</span></div>
+                                    <div class="inv-row"><span>التوصيل المحلي</span><span>${o.local_delivery_fees || 0} د.أ</span></div>
+                                    <div class="inv-row inv-total"><span>المجموع الكلي</span><span>${o.final_price || 0} د.أ</span></div>
+                                </div>
+                            ` : ''}
+
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                ${o.status === 'pending' ? `<button class="btn btn-outline" style="flex: 1; border-color: #ff4444; color: #ff4444;" onclick="cancelOrder('${o.id}')">إلغاء الطلب</button>` : ''}
+                                ${o.waybill_url ? `<button class="btn" style="flex: 1;" onclick="window.open('${o.waybill_url}')">📄 البوليصة</button>` : ''}
+                                <button class="btn btn-outline" style="flex: 1;" onclick="showSection('tickets')">🎫 مساعدة</button>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                dashList.innerHTML = orders.slice(0, 3).map(renderOrder).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد طلبات بعد</p>';
+                trackList.innerHTML = orders.map(renderOrder).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد طلبات بعد</p>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadAddresses() {
+            try {
+                const r = await fetch('/api/v1/customer/portal/addresses', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(!r.ok) return;
+                addresses = await r.json();
+                if(!Array.isArray(addresses)) addresses = [];
+                
+                const select = document.getElementById('order-address');
+                select.innerHTML = '<option value="">اختر من دفتر العناوين...</option>' + 
+                    addresses.map(a => `<option value="${a.id}">${a.name} - ${a.phone}</option>`).join('');
+                
+                document.getElementById('address-book-list').innerHTML = addresses.map(a => `
+                    <div class="card" style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 800;">${a.name}</div>
+                            <div style="font-size: 12px; opacity: 0.6;">${a.phone} | ${a.address}</div>
+                        </div>
+                        <button class="btn btn-outline" style="padding: 5px 10px; color: #ff4444; border-color: #ff4444;" onclick="deleteAddress('${a.id}')">حذف</button>
+                    </div>
+                `).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد عناوين محفوظة</p>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function saveAddress() {
+            const name = document.getElementById('addr-name').value;
+            const phone = document.getElementById('addr-phone').value;
+            const address = document.getElementById('addr-val').value;
+            
+            if (!name || !phone || !address) return toast('يرجى ملء كافة الحقول');
+
+            try {
+                const r = await fetch('/api/v1/customer/portal/addresses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name, phone, address })
+                });
+                if (r.ok) {
+                    toast('تم حفظ العنوان');
+                    document.getElementById('addr-name').value = '';
+                    document.getElementById('addr-phone').value = '';
+                    document.getElementById('addr-val').value = '';
+                    loadAddresses();
+                } else {
+                    toast('حدث خطأ أثناء حفظ العنوان');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function deleteAddress(id) {
+            if (confirm('هل أنت متأكد من حذف هذا العنوان؟')) {
+                try {
+                    await fetch(`/api/v1/customer/portal/addresses/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    loadAddresses();
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function toggleInsurance() {
+            insuranceEnabled = !insuranceEnabled;
+            document.getElementById('insurance-toggle').classList.toggle('active', insuranceEnabled);
+        }
+
+        function updateDeliveryFee() {
+            // Logic to update delivery fee display if needed
+        }
+
+        async function handleProductUpload(input) {
+            if (!input.files[0]) return;
+            const formData = new FormData();
+            formData.append('product_image', input.files[0]);
+            
+            try {
+                const r = await fetch('/api/v1/customer/portal/upload/product', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await r.json();
+                if (data.filePath) {
+                    selectedProductImg = data.filePath;
+                    const preview = document.getElementById('product-img-preview');
+                    preview.style.display = 'block';
+                    preview.style.backgroundImage = `url(${data.filePath})`;
+                    toast('تم رفع الصورة');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function uploadID(input) {
+            if (!input.files[0]) return;
+            const formData = new FormData();
+            formData.append('id_card', input.files[0]);
+            
+            try {
+                const r = await fetch('/api/v1/customer/portal/upload/id', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                if (r.ok) {
+                    toast('تم رفع الهوية، بانتظار المراجعة');
+                    init();
+                } else {
+                    toast('حدث خطأ أثناء رفع الهوية');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function submitOrder() {
+            const type = document.getElementById('order-type').value;
+            const address_id = document.getElementById('order-address').value;
+            const delivery_method = document.getElementById('delivery-method').value;
+            const items = document.getElementById('o-items').value;
+            const value = document.getElementById('o-value').value;
+            
+            if (!address_id || !items || !value) return toast('يرجى إكمال بيانات الطلب والعنوان');
+
+            const payload = {
+                type,
+                address_id,
+                delivery_method,
+                items: { description: items },
+                declared_value: parseFloat(value),
+                insurance_enabled: insuranceEnabled,
+                product_image_url: selectedProductImg
+            };
+
+            try {
+                const r = await fetch('/api/v1/customer/portal/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (r.ok) {
+                    toast('تم إنشاء الطلب بنجاح');
+                    showSection('tracking');
+                    loadOrders();
+                    
+                    // Reset form
+                    document.getElementById('o-items').value = '';
+                    document.getElementById('o-value').value = '';
+                    selectedProductImg = null;
+                    document.getElementById('product-img-preview').style.display = 'none';
+                } else {
+                    toast('فشل إنشاء الطلب');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function cancelOrder(id) {
+            if(confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) {
+                try {
+                    const r = await fetch(`/api/v1/customer/portal/orders/${id}/cancel`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if(r.ok) {
+                        toast('تم إلغاء الطلب');
+                        loadOrders();
+                    } else {
+                        toast('لا يمكن إلغاء الطلب في هذه المرحلة');
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        async function loadTransactions() {
+            try {
+                const r = await fetch('/api/v1/customer/portal/transactions', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(!r.ok) return;
+                let trans = await r.json();
+                if(!Array.isArray(trans)) trans = [];
+                
+                document.getElementById('transactions-list').innerHTML = trans.map(t => `
+                    <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div style="font-weight: 700;">${t.type === 'deposit' ? 'إيداع' : 'دفع طلب'}</div>
+                            <div style="font-size: 11px; opacity: 0.5;">${t.created_at ? new Date(t.created_at).toLocaleString('ar-JO') : ''}</div>
+                        </div>
+                        <div style="font-weight: 900; color: ${t.type === 'deposit' ? '#00ff00' : '#ff4444'};">
+                            ${t.type === 'deposit' ? '+' : '-'}${t.amount} د.أ
+                        </div>
+                    </div>
+                `).join('') || '<p style="text-align:center; opacity:0.5; padding: 20px;">لا توجد حركات مالية</p>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadTickets() {
+            try {
+                const r = await fetch('/api/v1/customer/portal/tickets', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(!r.ok) return;
+                let tickets = await r.json();
+                if(!Array.isArray(tickets)) tickets = [];
+                
+                document.getElementById('tickets-list').innerHTML = tickets.map(t => `
+                    <div class="card" style="padding: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <strong>${t.subject || ''}</strong>
+                            <span style="font-size: 11px; color: var(--accent);">${t.status || ''}</span>
+                        </div>
+                        <p style="font-size: 13px; opacity: 0.7;">${t.message || ''}</p>
+                    </div>
+                `).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد تذاكر دعم</p>';
+            } catch(e) { console.error(e); }
+        }
+
+        async function sendTicket() {
+            const subject = document.getElementById('t-subject').value;
+            const message = document.getElementById('t-message').value;
+            if (!subject || !message) return toast('يرجى كتابة الموضوع والرسالة');
+
+            try {
+                const r = await fetch('/api/v1/customer/portal/tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ subject, message })
+                });
+                if(r.ok) {
+                    toast('تم إرسال التذكرة');
+                    document.getElementById('t-subject').value = '';
+                    document.getElementById('t-message').value = '';
+                    loadTickets();
+                } else {
+                    toast('حدث خطأ أثناء إرسال التذكرة');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            if(t) {
+                t.innerText = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/index.html';
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gate 77 | الإدارة الاحترافية</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: #111111;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #FF8A00;
+            --accent-glow: rgba(255, 138, 0, 0.2);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --font-main: 'Tajawal', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text);
+            direction: rtl;
+            min-height: 100vh;
+        }
+
+        .card, table, .table-responsive, .scroll-x {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .admin-layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            padding: 40px 20px;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 14px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 40px;
+            max-width: 1400px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th {
+            text-align: right;
+            padding: 15px;
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border);
+        }
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .data-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; font-weight: 800; }
+        .stat-value { font-size: 32px; font-weight: 900; color: var(--accent); }
+
+        .fs-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .fs-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+
+        .hidden { display: none !important; }
+
+        .status-tag {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pending { background: var(--accent-glow); color: var(--accent); }
+        .status-approved { background: rgba(0, 255, 0, 0.1); color: #00ff00; }
+        .status-rejected { background: rgba(255, 0, 0, 0.1); color: #ff4444; }
+
+        @media (max-width: 1000px) {
+            .sidebar { display: none; }
+            .main-content { margin-right: 0; padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="brand" style="padding: 20px; margin-bottom: 20px; text-align: center;">
+                <img src="/img/logo.png" alt="Gate 77 Logo" style="height: 50px; width: auto;">
+            </div>
+            <nav id="admin-nav">
+                <a onclick="showSection('dashboard')" class="nav-link active" data-section="dashboard">🏠 لوحة القيادة</a>
+                <a onclick="showSection('orders')" class="nav-link" data-section="orders">📦 الطلبات الواردة</a>
+                <a onclick="showSection('users')" class="nav-link" data-section="users">👥 إدارة المستخدمين</a>
+                <a onclick="showSection('tickets')" class="nav-link" data-section="tickets">🎫 تذاكر الدعم</a>
+                <a onclick="showSection('trips')" class="nav-link" data-section="trips">✈️ الرحلات والشحن</a>
+                <a onclick="showSection('settings')" class="nav-link" data-section="settings">⚙️ الإعدادات العامة</a>
+                <a onclick="showSection('test')" class="nav-link" data-section="test">🧪 اختبار النظام</a>
+                <a onclick="logout()" class="nav-link" style="color: #f87171; margin-top: 20px;">🚪 تسجيل الخروج</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="section-header">
+                <h2 id="current-section-title" class="section-title" style="margin:0;">لوحة القيادة</h2>
+                <div id="admin-time" style="font-size: 12px; opacity: 0.5;"></div>
+            </header>
+
+            <!-- Order Details Modal -->
+            <div id="order-modal" class="modal-overlay hidden">
+                <div class="modal-content" style="max-width: 800px;">
+                    <button class="modal-close" onclick="closeOrderModal()">×</button>
+                    <h3 class="section-title">تفاصيل الطلب وإدارة الحالة</h3>
+                    
+                    <div id="order-details-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <!-- Details will be loaded here -->
+                    </div>
+
+                    <div class="card" style="background: rgba(255,255,255,0.02);">
+                        <span class="section-title">الإدارة المالية (د.أ)</span>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div>
+                                <label class="stat-label">أجور الشحن</label>
+                                <input type="number" id="m-shipping" class="fs-input" oninput="calcFinal()">
+                            </div>
+                            <div>
+                                <label class="stat-label">الجمارك</label>
+                                <input type="number" id="m-customs" class="fs-input" oninput="calcFinal()">
+                            </div>
+                            <div>
+                                <label class="stat-label">التأمين</label>
+                                <input type="number" id="m-insurance" class="fs-input" oninput="calcFinal()">
+                            </div>
+                            <div>
+                                <label class="stat-label">التوصيل المحلي</label>
+                                <input type="number" id="m-local" class="fs-input" oninput="calcFinal()">
+                            </div>
+                            <div>
+                                <label class="stat-label">الضرائب</label>
+                                <input type="number" id="m-tax" class="fs-input" oninput="calcFinal()">
+                            </div>
+                            <div>
+                                <label class="stat-label">السعر النهائي</label>
+                                <input type="number" id="m-final" class="fs-input" style="border-color: var(--accent); font-weight: 900;">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn" style="flex: 1; background: #00ff00;" onclick="submitStatusUpdate('approved')">✅ قبول واعتماد السعر</button>
+                            <button class="btn" style="flex: 1; background: #ff4444;" onclick="submitStatusUpdate('rejected')">❌ رفض الطلب</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button class="btn btn-outline" style="flex: 1;" onclick="submitStatusUpdate('in_progress')">🚚 جاري الشحن</button>
+                            <button class="btn btn-outline" style="flex: 1;" onclick="submitStatusUpdate('completed')">🏁 تم التسليم</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Details Modal -->
+            <div id="user-modal" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeUserModal()">×</button>
+                    <h3 class="section-title">توثيق المستخدم</h3>
+                    <div id="user-details-content"></div>
+                    <div id="id-image-container" style="margin: 20px 0; text-align: center;"></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" style="flex: 1; background: #00ff00;" onclick="submitUserVerify('verified')">✅ توثيق</button>
+                        <button class="btn" style="flex: 1; background: #ff4444;" onclick="submitUserVerify('rejected')">❌ رفض</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="admin-section">
+                <h2 class="section-title">التقارير الشهرية</h2>
+                <div class="card">
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <select id="rep-month" class="fs-input" style="margin:0;">
+                            <option value="01">يناير</option><option value="02">فبراير</option><option value="03">مارس</option>
+                            <option value="04">أبريل</option><option value="05">مايو</option><option value="06">يونيو</option>
+                            <option value="07">يوليو</option><option value="08">أغسطس</option><option value="09">سبتمبر</option>
+                            <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+                        </select>
+                        <input type="number" id="rep-year" class="fs-input" value="2026" style="margin:0;">
+                        <button class="btn" onclick="loadReport()">تحديث التقرير</button>
+                    </div>
+                    <div id="report-result" class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">إجمالي الطلبات</div>
+                            <div id="rep-total" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">الإيرادات الحالية</div>
+                            <div id="rep-rev" class="stat-value">0 د.أ</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">مستخدمين جدد</div>
+                            <div id="rep-users" class="stat-value">0</div>
+                        </div>
+                    </div>
+                    <div id="admin-reviews" class="hidden"></div>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders-section" class="admin-section hidden">
+                <h2 class="section-title">إدارة الطلبات</h2>
+                <div class="card" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الرقم التسلسلي</th>
+                                <th>العميل</th>
+                                <th>النوع</th>
+                                <th>الحالة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users-section" class="admin-section hidden">
+                <h2 class="section-title">إدارة المستخدمين</h2>
+                <div class="card" style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الحالة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Tickets Section -->
+            <section id="tickets-section" class="admin-section hidden">
+                <h2 class="section-title">تذاكر الدعم الفني</h2>
+                <div class="card">
+                    <div id="admin-tickets-list">
+                        <!-- Tickets -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trips Section -->
+            <section id="trips-section" class="admin-section hidden">
+                <h2 class="section-title">إدارة الرحلات</h2>
+                <div class="card">
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <input type="datetime-local" id="t-date" class="fs-input" style="margin:0;">
+                        <input type="text" id="t-route" class="fs-input" placeholder="المسار (مثلاً: الأردن - الجزائر)" style="margin:0;">
+                        <button class="btn" onclick="addTrip()">إضافة رحلة</button>
+                    </div>
+                    <div id="trips-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>المسار</th>
+                                    <th>إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trips-table">
+                                <!-- Trips will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="admin-section hidden">
+                <h2 class="section-title">إعدادات المنصة</h2>
+                <div class="card">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label class="stat-label">عنوان الهيرو</label>
+                            <input type="text" id="h-title" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">شعار الهيرو</label>
+                            <input type="text" id="h-slogan" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">رابط صورة الغلاف (Hero BG)</label>
+                            <input type="text" id="h-bg" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">رابط صورة الغلاف للهاتف</label>
+                            <input type="text" id="h-bg-mobile" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">عنوان الشاشة الرئيسية</label>
+                            <input type="text" id="m-title" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">نسبة التأمين (%)</label>
+                            <input type="number" id="ins-rate" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">مكافأة الدعوة (د.أ)</label>
+                            <input type="number" id="ref-reward" class="fs-input">
+                        </div>
+                        <div>
+                            <label class="stat-label">نص شريط الأخبار</label>
+                            <input type="text" id="news-text-input" class="fs-input">
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="stat-label">وصف الشاشة الرئيسية</label>
+                            <textarea id="m-desc" class="fs-input" style="height: 80px;"></textarea>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="stat-label">الأسئلة الشائعة (JSON)</label>
+                            <textarea id="faqs-json" class="fs-input" style="height: 120px; font-family: monospace;"></textarea>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="stat-label">الشروط والأحكام</label>
+                            <textarea id="terms-text" class="fs-input" style="height: 120px;"></textarea>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label class="stat-label">سياسة الخصوصية</label>
+                            <textarea id="privacy-text" class="fs-input" style="height: 120px;"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="saveSettings()">حفظ كافة التغييرات</button>
+                </div>
+            </section>
+
+            <!-- Test Section -->
+            <section id="test-section" class="admin-section hidden">
+                <h2 class="section-title">اختبار النظام</h2>
+                <div class="card" style="border-color: #00ff00;">
+                    <p style="font-size: 13px; margin-bottom: 20px; opacity: 0.7;">تشغيل اختبار شامل للتأكد من سلامة الربط بين الواجهة وقاعدة البيانات.</p>
+                    <button class="btn" style="background: #00ff00;" onclick="runSystemTest()">تشغيل الاختبار الآن</button>
+                    <div id="test-results" class="hidden" style="margin-top: 20px; font-size: 12px; background: #000; padding: 20px; border-radius: 8px; border: 1px solid #222;"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = '/index.html';
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+            
+            // Show target section
+            const target = document.getElementById(sectionId + '-section');
+            if (target) target.classList.remove('hidden');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            // Update header title
+            const titles = {
+                dashboard: 'لوحة القيادة',
+                orders: 'إدارة الطلبات',
+                users: 'إدارة المستخدمين',
+                tickets: 'تذاكر الدعم',
+                trips: 'إدارة الرحلات',
+                settings: 'الإعدادات العامة',
+                test: 'اختبار النظام'
+            };
+            document.getElementById('current-section-title').innerText = titles[sectionId] || 'لوحة الإدارة';
+        }
+
+        async function load() {
+            try {
+                document.getElementById('admin-time').innerText = new Date().toLocaleString('ar-JO');
+                
+                // 1. Settings
+                const rSet = await fetch('/api/v1/public/portal/settings');
+                const s = await rSet.json();
+                if (s) {
+                    document.getElementById('h-title').value = s.hero_title || '';
+                    document.getElementById('h-slogan').value = s.hero_slogan || '';
+                    document.getElementById('h-bg').value = s.hero_bg || '';
+                    document.getElementById('h-bg-mobile').value = s.hero_bg_mobile || '';
+                    document.getElementById('m-title').value = s.main_screen_title || '';
+                    document.getElementById('m-desc').value = s.main_screen_description || '';
+                    document.getElementById('ins-rate').value = s.insurance_rate || 2;
+                    document.getElementById('ref-reward').value = s.referral_reward_jod || 1;
+                    document.getElementById('news-text-input').value = s.news_text || '';
+                    document.getElementById('terms-text').value = s.terms_conditions || '';
+                    document.getElementById('privacy-text').value = s.privacy_policy || '';
+                    if (s.faqs) {
+                        const faqs = typeof s.faqs === 'string' ? s.faqs : JSON.stringify(s.faqs, null, 2);
+                        document.getElementById('faqs-json').value = faqs;
+                    }
+                }
+
+                // 2. Trips
+                const rTrips = await fetch('/api/v1/admin/portal/trips', { headers: { 'Authorization': `Bearer ${token}` } });
+                const trips = await rTrips.json();
+                if (Array.isArray(trips)) {
+                    document.getElementById('trips-table').innerHTML = trips.map(t => `
+                        <tr>
+                            <td>${new Date(t.trip_date).toLocaleString('ar-JO')}</td>
+                            <td>${t.route}</td>
+                            <td><button class="btn" style="background:#ff4444; padding:4px 8px; font-size:11px;" onclick="deleteTrip('${t.id}')">حذف</button></td>
+                        </tr>`).join('');
+                }
+
+                // 3. Orders
+                const rOrders = await fetch('/api/v1/admin/portal/orders', { headers: { 'Authorization': `Bearer ${token}` } });
+                const orders = await rOrders.json();
+                if (Array.isArray(orders)) {
+                    document.getElementById('orders-table').innerHTML = orders.map(o => `
+                        <tr>
+                            <td>${o.serial_number}</td>
+                            <td>${o.user_email || 'عميل'}</td>
+                            <td>${o.type}</td>
+                            <td><span class="status-tag status-${o.status}">${o.status}</span></td>
+                            <td>
+                                <div style="display:flex; gap:5px;">
+                                    <button class="btn" style="padding:4px 8px; font-size:11px; background:var(--accent);" onclick="openOrderModal('${o.id}')">👁️ عرض</button>
+                                    ${o.waybill_url ? `<button class="btn" style="padding:4px 8px; font-size:11px; background:var(--accent);" onclick="window.open('${o.waybill_url}')">📄</button>` : ''}
+                                </div>
+                            </td>
+                        </tr>`).join('');
+                }
+
+                // 4. Users
+                const rUsers = await fetch('/api/v1/admin/portal/users', { headers: { 'Authorization': `Bearer ${token}` } });
+                const users = await rUsers.json();
+                if (Array.isArray(users)) {
+                    document.getElementById('users-table').innerHTML = users.map(u => `
+                        <tr>
+                            <td>${u.full_name}</td>
+                            <td>${u.email}</td>
+                            <td>${u.verification_status}</td>
+                            <td>
+                                <div style="display:flex; gap:5px;">
+                                    <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openUserModal('${u.id}')">👤 توثيق</button>
+                                    <button class="btn" style="padding:4px 8px; font-size:11px; background:var(--accent);" onclick="adjustWallet('${u.id}')">💳</button>
+                                </div>
+                            </td>
+                        </tr>`).join('');
+                }
+
+                // 5. Tickets
+                loadTickets();
+
+            } catch (err) {
+                console.error('Initial load error:', err);
+            }
+        }
+
+        let currentOrderId = null;
+        async function openOrderModal(id) {
+            currentOrderId = id;
+            const r = await fetch('/api/v1/admin/portal/orders', { headers: { 'Authorization': `Bearer ${token}` } });
+            const orders = await r.json();
+            const o = orders.find(x => x.id === id);
+            if (!o) return;
+
+            const content = document.getElementById('order-details-content');
+            content.innerHTML = `
+                <div>
+                    <div class="stat-label">الرقم التسلسلي</div>
+                    <div class="stat-value" style="font-size: 18px;">${o.serial_number}</div>
+                </div>
+                <div>
+                    <div class="stat-label">نوع الطلب</div>
+                    <div style="font-weight: 800;">${o.type}</div>
+                </div>
+                <div>
+                    <div class="stat-label">طريقة التوصيل</div>
+                    <div style="font-weight: 800;">${o.delivery_method || 'pickup'}</div>
+                </div>
+                <div>
+                    <div class="stat-label">القيمة المصرح بها</div>
+                    <div style="font-weight: 800;">${o.declared_value} د.أ</div>
+                </div>
+                <div style="grid-column: span 2;">
+                    <div class="stat-label">المحتويات</div>
+                    <div style="font-size: 13px; opacity: 0.8;">${o.items}</div>
+                </div>
+                ${o.product_image_url ? `
+                <div style="grid-column: span 2;">
+                    <div class="stat-label">صورة المنتج</div>
+                    <img src="${o.product_image_url}" style="max-width: 100%; border-radius: 12px; margin-top: 10px;">
+                </div>` : ''}
+            `;
+
+            document.getElementById('m-shipping').value = o.shipping_fees || 0;
+            document.getElementById('m-customs').value = o.customs_fees || 0;
+            document.getElementById('m-insurance').value = o.insurance_amount || 0;
+            document.getElementById('m-local').value = o.local_delivery_fees || 0;
+            document.getElementById('m-tax').value = o.tax_value || 0;
+            document.getElementById('m-final').value = o.final_price || 0;
+
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+
+        function closeOrderModal() { document.getElementById('order-modal').classList.add('hidden'); }
+
+        function calcFinal() {
+            const s = parseFloat(document.getElementById('m-shipping').value) || 0;
+            const c = parseFloat(document.getElementById('m-customs').value) || 0;
+            const i = parseFloat(document.getElementById('m-insurance').value) || 0;
+            const l = parseFloat(document.getElementById('m-local').value) || 0;
+            const t = parseFloat(document.getElementById('m-tax').value) || 0;
+            document.getElementById('m-final').value = (s + c + i + l + t).toFixed(2);
+        }
+
+        async function submitStatusUpdate(status) {
+            const data = {
+                status,
+                shipping_fees: parseFloat(document.getElementById('m-shipping').value),
+                customs_fees: parseFloat(document.getElementById('m-customs').value),
+                insurance_amount: parseFloat(document.getElementById('m-insurance').value),
+                local_delivery_fees: parseFloat(document.getElementById('m-local').value),
+                tax_value: parseFloat(document.getElementById('m-tax').value),
+                final_price: parseFloat(document.getElementById('m-final').value)
+            };
+
+            if (status === 'rejected') {
+                const reason = prompt('سبب الرفض:');
+                if (!reason) return;
+                data.reason = reason;
+            }
+
+            const r = await fetch(`/api/v1/admin/portal/orders/${currentOrderId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(data)
+            });
+            if (r.ok) {
+                alert('تم تحديث الحالة والبيانات المالية');
+                closeOrderModal();
+                load();
+            }
+        }
+
+        let currentUserId = null;
+        async function openUserModal(id) {
+            currentUserId = id;
+            const r = await fetch('/api/v1/admin/portal/users', { headers: { 'Authorization': `Bearer ${token}` } });
+            const users = await r.json();
+            const u = users.find(x => x.id === id);
+            if (!u) return;
+
+            document.getElementById('user-details-content').innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>الاسم:</strong> ${u.full_name}</div>
+                <div style="margin-bottom: 10px;"><strong>الهاتف:</strong> ${u.phone}</div>
+                <div style="margin-bottom: 10px;"><strong>البريد:</strong> ${u.email}</div>
+            `;
+
+            const imgCont = document.getElementById('id-image-container');
+            if (u.id_image_url) {
+                imgCont.innerHTML = `<img src="${u.id_image_url}" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--border);">`;
+            } else {
+                imgCont.innerHTML = '<p style="opacity:0.5;">لا توجد صورة هوية مرفوعة</p>';
+            }
+
+            document.getElementById('user-modal').classList.remove('hidden');
+        }
+
+        function closeUserModal() { document.getElementById('user-modal').classList.add('hidden'); }
+
+        async function submitUserVerify(status) {
+            const note = status === 'rejected' ? prompt('سبب الرفض:') : null;
+            await fetch(`/api/v1/admin/portal/users/${currentUserId}/verification`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status, note })
+            });
+            alert('تم تحديث حالة التوثيق');
+            closeUserModal();
+            load();
+        }
+
+        async function saveSettings() {
+            const data = {
+                hero_title: document.getElementById('h-title').value,
+                hero_slogan: document.getElementById('h-slogan').value,
+                hero_bg: document.getElementById('h-bg').value,
+                hero_bg_mobile: document.getElementById('h-bg-mobile').value,
+                main_screen_title: document.getElementById('m-title').value,
+                main_screen_description: document.getElementById('m-desc').value,
+                insurance_rate: document.getElementById('ins-rate').value,
+                referral_reward_jod: document.getElementById('ref-reward').value,
+                news_text: document.getElementById('news-text-input').value,
+                terms_conditions: document.getElementById('terms-text').value,
+                privacy_policy: document.getElementById('privacy-text').value
+            };
+            
+            try {
+                const faqsRaw = document.getElementById('faqs-json').value;
+                if (faqsRaw) data.faqs = JSON.parse(faqsRaw);
+            } catch (e) {
+                alert('خطأ في تنسيق الأسئلة الشائعة (JSON غير صحيح)');
+                return;
+            }
+
+            const r = await fetch('/api/v1/admin/portal/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(data)
+            });
+            if (r.ok) alert('تم حفظ الإعدادات بنجاح');
+            else alert('فشل حفظ الإعدادات');
+        }
+
+        async function loadReport() {
+            const month = document.getElementById('rep-month').value;
+            const year = document.getElementById('rep-year').value;
+            const res = await fetch(`/api/v1/admin/portal/monthly-report?month=${month}&year=${year}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.stats) {
+                document.getElementById('rep-total').innerText = data.stats.total || 0;
+                document.getElementById('rep-rev').innerText = (data.stats.revenue || 0) + ' د.أ';
+                document.getElementById('rep-users').innerText = data.newUsers || 0;
+            }
+        }
+
+        async function addTrip() {
+            const trip_date = document.getElementById('t-date').value;
+            const route = document.getElementById('t-route').value;
+            if (!trip_date || !route) return alert('يرجى ملء كافة الحقول');
+            
+            await fetch('/api/v1/admin/portal/trips', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ trip_date, route })
+            });
+            load();
+        }
+
+        async function deleteTrip(id) {
+            if (confirm('هل أنت متأكد من حذف هذه الرحلة؟')) {
+                await fetch(`/api/v1/admin/portal/trips/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                load();
+            }
+        }
+
+        async function loadTickets() {
+            const r = await fetch('/api/v1/admin/portal/tickets', { headers: { 'Authorization': `Bearer ${token}` } });
+            const tickets = await r.json();
+            const list = document.getElementById('admin-tickets-list');
+            if (list && Array.isArray(tickets)) {
+                list.innerHTML = tickets.map(t => `
+                    <div class="card" style="padding:15px; margin-bottom:10px; border-right: 4px solid ${t.status === 'open' ? '#ff8a00' : t.status === 'answered' ? '#00ff00' : '#888'};">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${t.subject} (من: ${t.full_name})</strong>
+                            <span class="status-tag status-${t.status}">${t.status}</span>
+                        </div>
+                        <p style="font-size:13px; margin:10px 0;">${t.message}</p>
+                        <button class="btn btn-outline" style="padding:4px 10px; font-size:11px;" onclick="replyTicket('${t.id}')">الرد على التذكرة</button>
+                    </div>
+                `).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد تذاكر حالياً</p>';
+            }
+        }
+
+        async function replyTicket(id) {
+            const message = prompt('أدخل ردك:');
+            if (message) {
+                await fetch(`/api/v1/admin/portal/tickets/${id}/replies`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ message })
+                });
+                alert('تم إرسال الرد');
+                loadTickets();
+            }
+        }
+
+        async function adjustWallet(userId) {
+            const amount = prompt('أدخل المبلغ (موجب للإيداع، سالب للسحب):');
+            if (amount) {
+                await fetch(`/api/v1/admin/portal/users/${userId}/wallet/adjust`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ amount: parseFloat(amount) })
+                });
+                alert('تم تحديث المحفظة');
+                load();
+            }
+        }
+
+        async function runSystemTest() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerText = 'جاري الاختبار...';
+            const resDiv = document.getElementById('test-results');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = 'جاري تشغيل الاختبارات...';
+            
+            try {
+                const r = await fetch('/api/v1/debug/run-tests');
+                const data = await r.json();
+                if (data.success) {
+                    resDiv.innerHTML = '<h4 style="color:#00ff00; margin:0 0 10px 0;">✅ نجحت جميع الاختبارات!</h4>' + 
+                        data.results.map(rs => `<div>• ${rs.step}: <span style="color:#00ff00">${rs.status}</span></div>`).join('');
+                } else {
+                    resDiv.innerHTML = '<h4 style="color:#ff4444; margin:0 0 10px 0;">❌ فشل الاختبار</h4>' + 
+                        `<div style="color:#ff4444">${data.error}</div>`;
+                }
+            } catch (e) {
+                resDiv.innerHTML = '<div style="color:#ff4444">حدث خطأ أثناء الاتصال بالخادم</div>';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'تشغيل الاختبار الآن';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/index.html';
+        }
+
+        // Initial Load
+        load();
+    </script>
+</body>
+</html>
